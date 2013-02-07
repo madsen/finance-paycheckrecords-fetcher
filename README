@@ -1,7 +1,9 @@
 Finance-PaycheckRecords-Fetcher version {{$version}}, released {{$date}}
 
 
-This module {{ die "needs a description (README.md too)" }}.
+This module can download paystubs from PaycheckRecords.com, so you can
+save them for your records.  You can use Finance::PaycheckRecords
+(available separately) to extract information from the stored paystubs.
 
 
 
