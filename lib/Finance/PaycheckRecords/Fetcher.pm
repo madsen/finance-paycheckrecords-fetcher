@@ -24,11 +24,12 @@ use warnings;
 our $VERSION = '0.01';
 # This file is part of {{$dist}} {{$dist_version}} ({{$date}})
 
+use Carp ();
 use File::Slurp ();
 use LWP::UserAgent 6 ();        # SSL certificate validation
 use URI ();
 use URI::QueryParam ();         # part of URI; has no version number
-use WWW::Mechanize ();
+use WWW::Mechanize 1.50 ();     # autocheck on
 
 =head1 DEPENDENCIES
 
@@ -82,14 +83,23 @@ sub _get
       password  => $self->{password},
     );
     $mech->click('Login', 5, 4);
-    die "Login failed" if $mech->form_name('Login_Form');
+    # If we still see the login form, we must have failed to login properly
+    Carp::croak("PaycheckRecords: login failed")
+          if $mech->form_name('Login_Form');
   }
-
-  die unless $mech->success;    # FIXME
 } # end _get
 
 #---------------------------------------------------------------------
 sub listURL { 'https://www.paycheckrecords.com/in/paychecks.jsp' }
+
+=diag C<< PaycheckRecords: login failed >>
+
+The fetcher was unable to login to PaycheckRecords.com.  You
+probably supplied the wrong username or password to the constructor.
+
+=diag C<< Error GETing %s >>
+
+WWW::Mechanize encountered an error getting the specified URL.
 
 =for Pod::Coverage
 listURL
@@ -105,6 +115,9 @@ printer-friendly paystub for that date.
 
 Currently, it lists only the paystubs shown on the initial page after
 you log in.  For me, this is the last 6 paystubs.
+
+It throws an error if it is unable to get the list of available
+paystubs.  See L</DIAGNOSTICS>.
 
 =cut
 
@@ -131,6 +144,13 @@ sub available_paystubs
 } # end available_paystubs
 #---------------------------------------------------------------------
 
+=diag C<< Expected date= in %s >>
+
+This indicates that the specified URL does not look like it was
+expected to.  Perhaps PaycheckRecords.com has changed their website.
+Look for an updated version of Finance::PaycheckRecords::Fetcher.  If
+no update is available, report a bug.
+
 =method mirror
 
   @new_paystubs = $fetcher->mirror;
@@ -144,6 +164,9 @@ file by that name already exists, then it assumes that paystub has
 already been downloaded (and is not included in the return value).
 
 In scalar context, it returns the number of paystubs downloaded.
+
+It throws an error if it is unable to mirror the paystubs.
+See L</DIAGNOSTICS>.
 
 =cut
 
