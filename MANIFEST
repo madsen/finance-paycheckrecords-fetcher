@@ -5,6 +5,8 @@ META.json
 META.yml
 Makefile.PL
 README
+example/Paycheck-2013-01-04.html
+example/paystubs2qif.pl
 lib/Finance/PaycheckRecords/Fetcher.pm
 t/00-all_prereqs.t
 t/00-load.t

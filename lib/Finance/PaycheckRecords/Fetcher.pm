@@ -21,7 +21,7 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '1.000';
 # This file is part of {{$dist}} {{$dist_version}} ({{$date}})
 
 use Carp ();
